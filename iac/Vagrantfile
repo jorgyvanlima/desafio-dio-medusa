@@ -1,0 +1,41 @@
+# iac/Vagrantfile: Configuração da Infraestrutura como Código (IaC)
+Vagrant.configure("2") do |config|
+
+  config.vm.provider "virtualbox" do |vb|
+    vb.customize ["modifyvm", :id, "--nictype1", "Am79C973"] 
+    vb.customize ["modifyvm", :id, "--nictype2", "Am79C973"] 
+  end
+
+  # 1. VM KALI LINUX (ATACANTE) - IP: 192.168.56.10
+  config.vm.define "kali" do |kali|
+    kali.vm.box = "kalilinux/kali-linux-rolling"
+    kali.vm.hostname = "kali"
+    kali.vm.network "public_network", type: "dhcp", bridge: "en0" 
+    kali.vm.network "private_network", type: "hostonly", ip: "192.168.56.10"
+    
+    kali.vm.provider "virtualbox" do |vb|
+      vb.name = "DIO-Kali-Attacker"
+      vb.memory = "2048"
+      vb.cpus = "2"
+    end
+    
+    kali.vm.provision "shell", inline: <<-SHELL
+      echo "Atualizando Kali..."
+      sudo apt update && sudo apt upgrade -y
+      echo "Instalacao de ferramentas concluida. Kali pronto em 192.168.56.10."
+    SHELL
+  end
+
+  # 2. VM METASPLOITABLE 2 (ALVO) - IP: 192.168.56.20
+  config.vm.define "msf2" do |msf2|
+    msf2.vm.box = "r3p3nt/metasploitable2" 
+    msf2.vm.hostname = "msf2"
+    msf2.vm.network "private_network", type: "hostonly", ip: "192.168.56.20" 
+    
+    msf2.vm.provider "virtualbox" do |vb|
+      vb.name = "DIO-Metasploitable2-Target"
+      vb.memory = "1024"
+      vb.cpus = "1"
+    end
+  end
+end
