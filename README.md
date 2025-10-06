@@ -130,5 +130,4 @@ LinkedIn • GitHub
 
 ## 📜 Licença
 
-Este projeto está sob a licença MIT. Sinta-se livre para estudar, modificar e compartilhar.
- 
+Este projeto está sob a licença MIT. Sinta-se livre para estudar, modificar e compartilhar
